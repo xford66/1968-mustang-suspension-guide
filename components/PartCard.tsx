@@ -6,7 +6,12 @@ export function PartCard({ part }: { part: Part }) {
   return (
     <article className="kit-card">
       <div className="kit-photo" aria-hidden="true">
-        <span>{part.brand.slice(0, 2).toUpperCase()}</span>
+        {part.photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={part.photo} alt="" className="kit-photo-img" />
+        ) : (
+          <span>{part.brand.slice(0, 2).toUpperCase()}</span>
+        )}
       </div>
       <div className="kit-body">
         <p className="kit-brand">{part.brand}</p>
@@ -15,7 +20,7 @@ export function PartCard({ part }: { part: Part }) {
         <ul className="tags">
           <li>{styleLabel(part.style)}</li>
           <li>{part.pn}</li>
-          {part.tags.map((tag) => (
+          {part.tags.slice(0, 2).map((tag) => (
             <li key={tag}>{tag}</li>
           ))}
         </ul>
