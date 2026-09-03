@@ -2,6 +2,13 @@ export type MustangYear = 1964 | 1965 | 1966 | 1967 | 1968 | 1969 | 1970;
 
 export const YEARS: MustangYear[] = [1964, 1965, 1966, 1967, 1968, 1969, 1970];
 
+export const YEAR_PHOTO_BASE =
+  "https://onmhqvv4xorwr6k6.public.blob.vercel-storage.com";
+
+export function yearPhoto(year: MustangYear) {
+  return `${YEAR_PHOTO_BASE}/${year}.jpg`;
+}
+
 export const YEAR_NOTES: Record<MustangYear, string> = {
   1964: "1964½ launch year. Same early chassis as 1965.",
   1965: "First full year. Shorter front clip. Non-adjustable strut rods.",

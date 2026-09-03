@@ -1,6 +1,6 @@
 "use client";
 
-import { YEAR_NOTES, YEARS, type MustangYear } from "@/data/years";
+import { YEAR_NOTES, YEARS, yearPhoto, type MustangYear } from "@/data/years";
 
 type Props = {
   selected: MustangYear;
@@ -27,7 +27,7 @@ export function YearSelector({ selected, onSelect }: Props) {
             >
               <span className="year-label">{year}</span>
               <img
-                src={`/mustangs/${year}.jpg`}
+                src={yearPhoto(year)}
                 alt={`${year} Mustang`}
                 className="year-photo"
               />
