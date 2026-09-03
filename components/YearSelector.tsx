@@ -1,7 +1,6 @@
 "use client";
 
 import { YEAR_NOTES, YEARS, type MustangYear } from "@/data/years";
-import { MustangIcon } from "./MustangIcon";
 
 type Props = {
   selected: MustangYear;
@@ -27,7 +26,11 @@ export function YearSelector({ selected, onSelect }: Props) {
               aria-pressed={active}
             >
               <span className="year-label">{year}</span>
-              <MustangIcon year={year} />
+              <img
+                src={`/mustangs/${year}.jpg`}
+                alt={`${year} Mustang`}
+                className="year-photo"
+              />
             </button>
           );
         })}
