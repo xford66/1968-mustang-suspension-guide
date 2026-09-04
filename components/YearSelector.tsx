@@ -9,11 +9,8 @@ type Props = {
 
 export function YearSelector({ selected, onSelect }: Props) {
   return (
-    <section className="panel">
-      <div className="panel-head">
-        <h2>Choose the year</h2>
-        <p>{YEAR_NOTES[selected]}</p>
-      </div>
+    <div className="year-bar">
+      <p className="year-note">{YEAR_NOTES[selected]}</p>
       <div className="year-row">
         {YEARS.map((year) => {
           const active = year === selected;
@@ -35,6 +32,6 @@ export function YearSelector({ selected, onSelect }: Props) {
           );
         })}
       </div>
-    </section>
+    </div>
   );
 }
