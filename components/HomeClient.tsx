@@ -8,6 +8,7 @@ import { YearSelector } from "./YearSelector";
 import type { CategoryId } from "@/data/categories";
 import { kitBySlug } from "@/data/kits";
 import { partBySlug } from "@/data/parts";
+import { defaultSubFor, type SubcategoryId } from "@/data/subcategories";
 import type { MustangYear } from "@/data/years";
 
 type Selection =
@@ -18,6 +19,7 @@ type Selection =
 export function HomeClient() {
   const [year, setYear] = useState<MustangYear>(1968);
   const [category, setCategory] = useState<CategoryId>("suspension");
+  const [subcategory, setSubcategory] = useState<SubcategoryId>("factory-uca");
   const [selected, setSelected] = useState<Selection>(null);
 
   const part = useMemo(
@@ -29,6 +31,18 @@ export function HomeClient() {
     [selected],
   );
 
+  function pickCategory(id: CategoryId) {
+    setCategory(id);
+    const next = defaultSubFor(id);
+    if (next) setSubcategory(next.id);
+    setSelected(null);
+  }
+
+  function pickSub(id: SubcategoryId) {
+    setSubcategory(id);
+    setSelected(null);
+  }
+
   return (
     <div className="app-shell">
       <header className="top-bar">
@@ -39,14 +53,18 @@ export function HomeClient() {
         <YearSelector selected={year} onSelect={setYear} />
       </header>
       <div className="workspace">
-        <CategorySidebar selected={category} onSelect={setCategory} />
-        {category === "suspension" ? (
-          <PartsWorkspace year={year} selected={selected} onSelect={setSelected} />
-        ) : (
-          <section className="workspace-main empty-main">
-            <p className="empty">This category is not built yet.</p>
-          </section>
-        )}
+        <CategorySidebar
+          category={category}
+          subcategory={subcategory}
+          onCategory={pickCategory}
+          onSubcategory={pickSub}
+        />
+        <PartsWorkspace
+          year={year}
+          subcategory={subcategory}
+          selected={selected}
+          onSelect={setSelected}
+        />
         <PartDetailPane part={part} kit={kit} />
       </div>
     </div>

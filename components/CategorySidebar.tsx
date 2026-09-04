@@ -1,30 +1,62 @@
 "use client";
 
 import { CATEGORIES, type CategoryId } from "@/data/categories";
+import {
+  subsForCategory,
+  type SubcategoryId,
+} from "@/data/subcategories";
 
 type Props = {
-  selected: CategoryId;
-  onSelect: (id: CategoryId) => void;
+  category: CategoryId;
+  subcategory: SubcategoryId;
+  onCategory: (id: CategoryId) => void;
+  onSubcategory: (id: SubcategoryId) => void;
 };
 
-export function CategorySidebar({ selected, onSelect }: Props) {
+export function CategorySidebar({
+  category,
+  subcategory,
+  onCategory,
+  onSubcategory,
+}: Props) {
   return (
     <aside className="sidebar">
       <p className="sidebar-label">Categories</p>
       <nav className="sidebar-nav">
         {CATEGORIES.map((cat) => {
-          const active = cat.id === selected;
+          const open = cat.id === category;
+          const kids = subsForCategory(cat.id);
+          const anyReady = kids.some((s) => s.ready);
           return (
-            <button
-              key={cat.id}
-              type="button"
-              className={active ? "side-item active" : "side-item"}
-              onClick={() => onSelect(cat.id)}
-            >
-              <span className={cat.ready ? "dot ready" : "dot"} />
-              <span className="side-label">{cat.label}</span>
-              {!cat.ready ? <span className="soon">Soon</span> : null}
-            </button>
+            <div key={cat.id} className="cat-block">
+              <button
+                type="button"
+                className={open ? "side-item active" : "side-item"}
+                onClick={() => onCategory(cat.id)}
+              >
+                <span className="caret">{open ? "\u25be" : "\u25b8"}</span>
+                <span className={anyReady ? "dot ready" : "dot"} />
+                <span className="side-label">{cat.label}</span>
+              </button>
+              {open ? (
+                <div className="tree-kids">
+                  {kids.map((sub) => {
+                    const active = sub.id === subcategory;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        className={active ? "tree-kid active" : "tree-kid"}
+                        onClick={() => onSubcategory(sub.id)}
+                      >
+                        <span className="side-label">{sub.label}</span>
+                        {!sub.ready ? <span className="soon">Soon</span> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
           );
         })}
       </nav>
