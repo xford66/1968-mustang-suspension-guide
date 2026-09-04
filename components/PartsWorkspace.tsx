@@ -5,7 +5,9 @@ import { kitsForYear, type Kit } from "@/data/kits";
 import { PARTS, type Part } from "@/data/parts";
 import type { MustangYear } from "@/data/years";
 
-type GroupId = "factory-uca" | "tubular-uca" | "kits-bolton" | "kits-mii" | "kits-full";
+type PartGroupId = "factory-uca" | "tubular-uca";
+type KitGroupId = "kits-bolton" | "kits-mii" | "kits-full";
+type GroupId = PartGroupId | KitGroupId;
 
 type Group = {
   id: GroupId;
@@ -32,6 +34,10 @@ type Props = {
   onSelect: (next: Selection) => void;
 };
 
+function isPartGroup(id: GroupId): id is PartGroupId {
+  return id === "factory-uca" || id === "tubular-uca";
+}
+
 export function PartsWorkspace({ year, selected, onSelect }: Props) {
   const [open, setOpen] = useState<Record<string, boolean>>({
     "factory-uca": true,
@@ -44,7 +50,7 @@ export function PartsWorkspace({ year, selected, onSelect }: Props) {
     return {
       "factory-uca": yearParts.filter((p) => p.style === "factory"),
       "tubular-uca": yearParts.filter((p) => p.style === "tubular"),
-    };
+    } satisfies Record<PartGroupId, Part[]>;
   }, [year]);
 
   const kitsByGroup = useMemo(() => {
@@ -53,16 +59,19 @@ export function PartsWorkspace({ year, selected, onSelect }: Props) {
       "kits-bolton": yearKits.filter((k) => k.tier === "bolt-on"),
       "kits-mii": yearKits.filter((k) => k.tier === "mustang-ii"),
       "kits-full": yearKits.filter((k) => k.tier === "full-chassis"),
-    };
+    } satisfies Record<KitGroupId, Kit[]>;
   }, [year]);
+
+  function itemsFor(id: GroupId): Part[] | Kit[] {
+    return isPartGroup(id) ? partsByGroup[id] : kitsByGroup[id];
+  }
 
   return (
     <section className="workspace-main">
       <div className="tree">
         {GROUPS.map((group) => {
           const expanded = !!open[group.id];
-          const isParts = group.id === "factory-uca" || group.id === "tubular-uca";
-          const items = isParts ? partsByGroup[group.id] : kitsByGroup[group.id];
+          const items = itemsFor(group.id);
           const brands = uniqueBrands(items);
           const activeBrand = brandFilter[group.id] ?? "all";
           return (
@@ -72,7 +81,7 @@ export function PartsWorkspace({ year, selected, onSelect }: Props) {
                 className="tree-parent"
                 onClick={() => setOpen((s) => ({ ...s, [group.id]: !expanded }))}
               >
-                <span className="caret">{expanded ? "▾" : "▸"}</span>
+                <span className="caret">{expanded ? "\u25be" : "\u25b8"}</span>
                 {group.label}
                 <span className="count">{items.length}</span>
               </button>
@@ -109,15 +118,15 @@ export function PartsWorkspace({ year, selected, onSelect }: Props) {
       <div className="grid-wrap">
         {GROUPS.map((group) => {
           if (!open[group.id]) return null;
-          const isParts = group.id === "factory-uca" || group.id === "tubular-uca";
-          const items = isParts ? partsByGroup[group.id] : kitsByGroup[group.id];
+          const items = itemsFor(group.id);
           const brand = brandFilter[group.id] ?? "all";
           const rows = brand === "all" ? items : items.filter((i) => i.brand === brand);
+          const showParts = isPartGroup(group.id);
           return (
             <div key={group.id} className="grid-block">
               <h3>
                 {group.label}
-                {brand !== "all" ? ` · ${brand}` : ""}
+                {brand !== "all" ? ` \u00b7 ${brand}` : ""}
               </h3>
               <div className="part-table">
                 <div className="part-row head">
@@ -128,7 +137,7 @@ export function PartsWorkspace({ year, selected, onSelect }: Props) {
                 </div>
                 {rows.length === 0 ? (
                   <p className="empty">Nothing listed for {year} in this group.</p>
-                ) : isParts ? (
+                ) : showParts ? (
                   (rows as Part[]).map((part) => {
                     const active = selected?.kind === "part" && selected.slug === part.slug;
                     return (
