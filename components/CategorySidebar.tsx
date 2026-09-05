@@ -11,6 +11,7 @@ type Props = {
   subcategory: SubcategoryId;
   onCategory: (id: CategoryId) => void;
   onSubcategory: (id: SubcategoryId) => void;
+  open?: boolean;
 };
 
 export function CategorySidebar({
@@ -18,9 +19,10 @@ export function CategorySidebar({
   subcategory,
   onCategory,
   onSubcategory,
+  open = false,
 }: Props) {
   return (
-    <aside className="sidebar">
+    <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="brand-lockup">
         <p className="eyebrow">First-gen Mustang</p>
         <h1>Parts Guide</h1>
@@ -28,21 +30,21 @@ export function CategorySidebar({
       <p className="sidebar-label">Categories</p>
       <nav className="sidebar-nav">
         {CATEGORIES.map((cat) => {
-          const open = cat.id === category;
+          const isOpen = cat.id === category;
           const kids = subsForCategory(cat.id);
           const anyReady = kids.some((s) => s.ready);
           return (
             <div key={cat.id} className="cat-block">
               <button
                 type="button"
-                className={open ? "side-item active" : "side-item"}
+                className={isOpen ? "side-item active" : "side-item"}
                 onClick={() => onCategory(cat.id)}
               >
-                <span className="caret">{open ? "\u25be" : "\u25b8"}</span>
+                <span className="caret">{isOpen ? "\u25be" : "\u25b8"}</span>
                 <span className={anyReady ? "dot ready" : "dot"} />
                 <span className="side-label">{cat.label}</span>
               </button>
-              {open ? (
+              {isOpen ? (
                 <div className="tree-kids">
                   {kids.map((sub) => {
                     const active = sub.id === subcategory;

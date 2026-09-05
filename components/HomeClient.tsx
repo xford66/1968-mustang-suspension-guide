@@ -21,6 +21,7 @@ export function HomeClient() {
   const [category, setCategory] = useState<CategoryId>("suspension");
   const [subcategory, setSubcategory] = useState<SubcategoryId>("factory-uca");
   const [selected, setSelected] = useState<Selection>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const part = useMemo(
     () => (selected?.kind === "part" ? partBySlug(selected.slug) : undefined),
@@ -41,18 +42,39 @@ export function HomeClient() {
   function pickSub(id: SubcategoryId) {
     setSubcategory(id);
     setSelected(null);
+    setMenuOpen(false);
   }
 
   return (
-    <div className="app-shell">
+    <div className={menuOpen ? "app-shell menu-open" : "app-shell"}>
+      {menuOpen ? (
+        <button
+          type="button"
+          className="menu-backdrop"
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      ) : null}
       <CategorySidebar
         category={category}
         subcategory={subcategory}
         onCategory={pickCategory}
         onSubcategory={pickSub}
+        open={menuOpen}
       />
       <div className="main-col">
         <header className="top-bar">
+          <div className="mobile-head">
+            <button
+              type="button"
+              className="menu-btn"
+              aria-label="Open categories"
+              onClick={() => setMenuOpen(true)}
+            >
+              Menu
+            </button>
+            <p className="mobile-title">Parts Guide</p>
+          </div>
           <YearSelector selected={year} onSelect={setYear} />
         </header>
         <div className="workspace">
