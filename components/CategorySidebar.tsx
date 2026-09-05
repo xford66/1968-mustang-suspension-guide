@@ -6,6 +6,19 @@ import {
   type SubcategoryId,
 } from "@/data/subcategories";
 
+const ICONS: Record<CategoryId, string> = {
+  engine: "EN",
+  interior: "IN",
+  suspension: "SU",
+  steering: "ST",
+  brakes: "BR",
+  "wheels-tires": "WT",
+  transmission: "TR",
+  "rear-end": "RE",
+  body: "BD",
+  electrical: "EL",
+};
+
 type Props = {
   category: CategoryId;
   subcategory: SubcategoryId;
@@ -24,8 +37,11 @@ export function CategorySidebar({
   return (
     <aside className={open ? "sidebar open" : "sidebar"}>
       <div className="brand-lockup">
-        <p className="eyebrow">First-gen Mustang</p>
-        <h1>Parts Guide</h1>
+        <p className="brand-mark">PG</p>
+        <div className="brand-text">
+          <p className="eyebrow">First-gen Mustang</p>
+          <h1>Parts Guide</h1>
+        </div>
       </div>
       <p className="sidebar-label">Categories</p>
       <nav className="sidebar-nav">
@@ -39,10 +55,13 @@ export function CategorySidebar({
                 type="button"
                 className={isOpen ? "side-item active" : "side-item"}
                 onClick={() => onCategory(cat.id)}
+                title={cat.label}
               >
-                <span className="caret">{isOpen ? "\u25be" : "\u25b8"}</span>
-                <span className={anyReady ? "dot ready" : "dot"} />
+                <span className={anyReady ? "cat-icon ready" : "cat-icon"}>
+                  {ICONS[cat.id]}
+                </span>
                 <span className="side-label">{cat.label}</span>
+                <span className="caret">{isOpen ? "\u25be" : "\u25b8"}</span>
               </button>
               {isOpen ? (
                 <div className="tree-kids">
