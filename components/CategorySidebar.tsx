@@ -21,6 +21,10 @@ export function CategorySidebar({
 }: Props) {
   return (
     <aside className="sidebar">
+      <div className="brand-lockup">
+        <p className="eyebrow">First-gen Mustang</p>
+        <h1>Parts Guide</h1>
+      </div>
       <p className="sidebar-label">Categories</p>
       <nav className="sidebar-nav">
         {CATEGORIES.map((cat) => {

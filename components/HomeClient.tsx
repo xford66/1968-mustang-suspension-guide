@@ -45,27 +45,25 @@ export function HomeClient() {
 
   return (
     <div className="app-shell">
-      <header className="top-bar">
-        <div className="brand-lockup">
-          <p className="eyebrow">First-gen Mustang</p>
-          <h1>Parts Guide</h1>
+      <CategorySidebar
+        category={category}
+        subcategory={subcategory}
+        onCategory={pickCategory}
+        onSubcategory={pickSub}
+      />
+      <div className="main-col">
+        <header className="top-bar">
+          <YearSelector selected={year} onSelect={setYear} />
+        </header>
+        <div className="workspace">
+          <PartsWorkspace
+            year={year}
+            subcategory={subcategory}
+            selected={selected}
+            onSelect={setSelected}
+          />
+          <PartDetailPane part={part} kit={kit} />
         </div>
-        <YearSelector selected={year} onSelect={setYear} />
-      </header>
-      <div className="workspace">
-        <CategorySidebar
-          category={category}
-          subcategory={subcategory}
-          onCategory={pickCategory}
-          onSubcategory={pickSub}
-        />
-        <PartsWorkspace
-          year={year}
-          subcategory={subcategory}
-          selected={selected}
-          onSelect={setSelected}
-        />
-        <PartDetailPane part={part} kit={kit} />
       </div>
     </div>
   );
