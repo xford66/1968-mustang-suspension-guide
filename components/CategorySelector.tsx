@@ -1,6 +1,7 @@
 "use client";
 
 import { CATEGORIES, type CategoryId } from "@/data/categories";
+import { subsForCategory } from "@/data/subcategories";
 
 type Props = {
   selected: CategoryId;
@@ -17,16 +18,17 @@ export function CategorySelector({ selected, onSelect }: Props) {
       <div className="cat-row">
         {CATEGORIES.map((cat) => {
           const active = cat.id === selected;
+          const ready = subsForCategory(cat.id).some((s) => s.ready);
           return (
             <button
               key={cat.id}
               type="button"
               className={active ? "pill active" : "pill"}
               onClick={() => onSelect(cat.id)}
-              disabled={!cat.ready && cat.id !== selected}
+              disabled={!ready && cat.id !== selected}
             >
               {cat.label}
-              {!cat.ready ? <span className="soon">Soon</span> : null}
+              {!ready ? <span className="soon">Soon</span> : null}
             </button>
           );
         })}
