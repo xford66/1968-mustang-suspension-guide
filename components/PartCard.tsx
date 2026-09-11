@@ -1,33 +1,93 @@
-import Link from "next/link";
-import type { Part } from "@/data/parts";
-import { styleLabel } from "@/data/parts";
+"use client";
 
-export function PartCard({ part }: { part: Part }) {
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { Part, PartStyle } from "@/lib/data";
+import { installBadge } from "@/lib/data";
+import { Photo } from "./Photo";
+import type { CardCompare } from "./KitCard";
+import styles from "./PartCard.module.css";
+
+type InstallBadge = ReturnType<typeof installBadge>;
+
+const BADGE_CLASS: Record<InstallBadge, string> = {
+  "Bolt-on": styles.badgeBolt,
+  "Weld-in": styles.badgeWeld,
+  "Pro install": styles.badgePro,
+  Moderate: styles.badgeModerate,
+};
+
+const STYLE_LABEL: Record<PartStyle, string> = {
+  factory: "Factory",
+  tubular: "Tubular",
+};
+
+export function PartCard({ part, compare }: { part: Part; compare: CardCompare }) {
+  const router = useRouter();
+  const href = `/parts/${part.slug}`;
+  const badge = installBadge(part);
+
+  const go = () => router.push(href);
+
   return (
-    <article className="kit-card">
-      <div className="kit-photo" aria-hidden="true">
-        {part.photo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={part.photo} alt="" className="kit-photo-img" />
-        ) : (
-          <span>{part.brand.slice(0, 2).toUpperCase()}</span>
-        )}
+    <article
+      className={styles.card}
+      onClick={go}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") go();
+      }}
+      tabIndex={0}
+      role="link"
+      aria-label={`${part.brand} ${part.name}`}
+    >
+      <div className={styles.media}>
+        <Photo
+          src={part.photo}
+          brand={part.brand}
+          alt={`${part.brand} ${part.name}`}
+          className={styles.mediaPhoto}
+        />
       </div>
-      <div className="kit-body">
-        <p className="kit-brand">{part.brand}</p>
-        <h3>{part.name}</h3>
-        <p className="kit-overview">{part.overview}</p>
-        <ul className="tags">
-          <li>{styleLabel(part.style)}</li>
-          <li>{part.pn}</li>
+      <div className={styles.body}>
+        <p className={styles.eyebrow}>{part.brand}</p>
+        <h3 className={styles.name}>
+          <Link href={href} onClick={(e) => e.stopPropagation()}>
+            {part.name}
+          </Link>
+        </h3>
+        <p className={styles.pn}>
+          <span className={styles.pnLabel}>PN</span>
+          <code>{part.pn}</code>
+        </p>
+        <ul className={styles.years} aria-label="Fitment years">
+          {part.years.map((year) => (
+            <li key={year}>{year}</li>
+          ))}
+        </ul>
+        <div className={styles.meta}>
+          <strong className={styles.price}>{part.priceRange}</strong>
+          <span className={`${styles.badge} ${BADGE_CLASS[badge]}`}>{badge}</span>
+        </div>
+        <ul className={styles.tags}>
+          <li className={styles.styleTag}>{STYLE_LABEL[part.style]}</li>
           {part.tags.slice(0, 2).map((tag) => (
             <li key={tag}>{tag}</li>
           ))}
         </ul>
-        <div className="kit-foot">
-          <span className="price">{part.priceRange}</span>
-          <Link href={`/parts/${part.slug}`}>View details</Link>
-        </div>
+        <label
+          className={styles.compare}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+          title={compare.disabled ? "Pick up to 3" : undefined}
+        >
+          <input
+            type="checkbox"
+            checked={compare.checked}
+            onChange={compare.onToggle}
+            disabled={compare.disabled}
+          />
+          Compare
+        </label>
       </div>
     </article>
   );
