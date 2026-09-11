@@ -13,6 +13,7 @@ export type Kit = {
   install: string;
   priceRange: string;
   details: string;
+  photo?: string;
 };
 
 export const TIER_META: Record<
@@ -39,6 +40,7 @@ export const TIER_META: Record<
 export const KITS: Kit[] = [
   {
     slug: "global-west-coilover",
+    photo: "/photos/global-west-negative-roll-front-coilover-system-comn.jpg",
     brand: "Global West",
     name: "Negative Roll coilover kit",
     tier: "bolt-on",
@@ -53,6 +55,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "qa1-level-2",
+    photo: "/photos/qa1-pro-front-coil-over-system-single-adj-al.webp",
     brand: "QA1",
     name: "Level 2 handling kit",
     tier: "bolt-on",
@@ -67,6 +70,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "ridetech-streetgrip",
+    photo: "/photos/ridetech-67-70-hq-coilover-package-12100202-match.jpg",
     brand: "Ridetech",
     name: "StreetGrip",
     tier: "bolt-on",
@@ -81,6 +85,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "tcp-coilover",
+    photo: "/photos/total-control-products-fcoc-fd-front-coil-over-conversion.webp",
     brand: "Total Control Products",
     name: "Coil-spring / VariShock conversion",
     tier: "bolt-on",
@@ -95,6 +100,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "heidts-mustang-ii",
+    photo: "/photos/heidts-mustang-ii-weld-in-ifs.jpg",
     brand: "Heidts",
     name: "Mustang II IFS",
     tier: "mustang-ii",
@@ -109,6 +115,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "scotts-hotrods-ifs",
+    photo: "/photos/scott-s-hotrods-weld-in-ifs-packages-e-g-7-6466-1m-31-64.png",
     brand: "Scott's Hot Rods",
     name: "IFS package",
     tier: "mustang-ii",
@@ -123,6 +130,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "heidts-prog-irs",
+    photo: "/photos/heidts-pro-g-irs.jpg",
     brand: "Heidts",
     name: "Pro-G IFS + IRS",
     tier: "full-chassis",
@@ -137,6 +145,7 @@ export const KITS: Kit[] = [
   },
   {
     slug: "detroit-speed-aluma-frame",
+    photo: "/photos/detroit-speed-aluma-frame-032050-dds-double-adj.jpg",
     brand: "Detroit Speed",
     name: "Aluma-Frame + QuadraLink",
     tier: "full-chassis",

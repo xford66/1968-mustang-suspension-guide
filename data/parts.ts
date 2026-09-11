@@ -28,6 +28,7 @@ const Y64_70: MustangYear[] = [1964, 1965, 1966, 1967, 1968, 1969, 1970];
 export const PARTS: Part[] = [
   {
     slug: "drake-c4dz-3082-ri",
+    photo: "/photos/scott-drake-performance-shock-kit.jpg",
     brand: "Scott Drake",
     name: "Boxed upper control arm",
     pn: "C4DZ-3082-RI",
@@ -43,6 +44,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "drake-c7dz-3082-ri",
+    photo: "/photos/scott-drake-performance-shock-kit.jpg",
     brand: "Scott Drake",
     name: "Boxed upper control arm",
     pn: "C7DZ-3082-RI",
@@ -193,6 +195,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "global-west-mst-463",
+    photo: "/photos/global-west-g-plus-front-coilover-system-comst-6466d.jpg",
     brand: "Global West",
     name: "Street / drag tubular upper arms",
     pn: "MST-463",
@@ -208,6 +211,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "global-west-mnr-46",
+    photo: "/photos/global-west-negative-roll-front-coilover-system-comn.jpg",
     brand: "Global West",
     name: "Negative Roll tubular upper arms",
     pn: "MNR-46",
@@ -223,6 +227,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "global-west-mst-733",
+    photo: "/photos/global-west-g-plus-front-coilover-system-comst-6466d.jpg",
     brand: "Global West",
     name: "Street / drag tubular upper arms",
     pn: "MST-733",
@@ -238,6 +243,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "global-west-mnr-733",
+    photo: "/photos/global-west-negative-roll-front-coilover-bb-comnr-67.jpg",
     brand: "Global West",
     name: "Negative Roll tubular upper arms",
     pn: "MNR-733",
@@ -253,6 +259,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "cpp-6466tca-uk",
+    photo: "/photos/cpp-front-coilover-conversion-w-viking-doubl.jpg",
     brand: "Classic Performance Products",
     name: "Tubular upper control arms",
     pn: "6466TCA-UK",
@@ -268,6 +275,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "cpp-6770tca-ukb",
+    photo: "/photos/cpp-stage-4-front-dual-adj-coilovers-w-arms-rear-sho.jpg",
     brand: "Classic Performance Products",
     name: "Tubular upper control arms",
     pn: "6770TCA-UKB",
@@ -343,6 +351,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "tcp-uca-01-svh",
+    photo: "/photos/total-control-products-fcoc-fd-front-coil-over-conversion.webp",
     brand: "Total Control Products",
     name: "Double-adjust tubular uppers, straight shaft",
     pn: "UCA-01-SVH",
@@ -358,6 +367,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "tcp-uca-06-svh",
+    photo: "/photos/total-control-products-fcoc-fd-front-coil-over-conversion.webp",
     brand: "Total Control Products",
     name: "Double-adjust tubular uppers, dropped shaft",
     pn: "UCA-06-SVH",
@@ -373,6 +383,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "tcp-uca-02-svh",
+    photo: "/photos/total-control-products-fcoc-fd-front-coil-over-conversion.webp",
     brand: "Total Control Products",
     name: "Double-adjust tubular uppers, straight shaft",
     pn: "UCA-02-SVH",
@@ -388,6 +399,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "tcp-uca-07-svh",
+    photo: "/photos/total-control-products-fcoc-fd-front-coil-over-conversion.webp",
     brand: "Total Control Products",
     name: "Double-adjust tubular uppers, dropped shaft",
     pn: "UCA-07-SVH",
@@ -403,6 +415,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "sot-uca65-66",
+    photo: "/photos/street-or-track-tubular-front-end-system-sot-tfekit.jpg",
     brand: "Street or Track",
     name: "Heim tubular upper arms",
     pn: "SOT-UCA65-66",
@@ -418,6 +431,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "sot-uca67-73",
+    photo: "/photos/street-or-track-front-bilstein-coilover-system-sot-coilo.jpg",
     brand: "Street or Track",
     name: "Heim tubular upper arms",
     pn: "SOT-UCA67-73",
@@ -433,6 +447,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "mmi-mod-uca",
+    photo: "/photos/mike-maier-inc-mod-1-front-suspension-kit.webp",
     brand: "Mike Maier Inc.",
     name: "MOD tubular upper arms",
     pn: "MOD UCA pair",
@@ -448,6 +463,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "qa1-52703",
+    photo: "/photos/qa1-pro-front-coil-over-system-single-adj-al.webp",
     brand: "QA1",
     name: "Tubular upper arms for Pro Coil",
     pn: "52703",
@@ -463,6 +479,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "qa1-52705",
+    photo: "/photos/qa1-pro-front-coil-over-system-single-adj-al.webp",
     brand: "QA1",
     name: "Tubular upper arms for Pro Coil",
     pn: "52705",
@@ -478,6 +495,7 @@ export const PARTS: Part[] = [
   },
   {
     slug: "ridetech-12103699",
+    photo: "/photos/ridetech-67-70-hq-package-12100202-strongarms-musclebar-rear-bolt-on-4-link.webp",
     brand: "Ridetech",
     name: "StrongArms upper control arms",
     pn: "12103699",

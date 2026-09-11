@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   getAllKits,
   getKitBySlug,
@@ -52,7 +53,9 @@ export default async function KitDetailPage({ params }: Props) {
 
   return (
     <>
-      <DetailHeader />
+      <Suspense>
+        <DetailHeader />
+      </Suspense>
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
