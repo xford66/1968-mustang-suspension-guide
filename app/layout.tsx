@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { CompareTray } from "@/components/CompareTray";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,7 +24,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Suspense>
+          <CompareTray />
+        </Suspense>
+      </body>
     </html>
   );
 }

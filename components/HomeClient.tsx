@@ -1,92 +1,183 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { CategorySidebar } from "./CategorySidebar";
-import { PartDetailPane } from "./PartDetailPane";
-import { PartsWorkspace } from "./PartsWorkspace";
-import { YearSelector } from "./YearSelector";
-import type { CategoryId } from "@/data/categories";
-import { kitBySlug } from "@/data/kits";
-import { partBySlug } from "@/data/parts";
-import { defaultSubFor, type SubcategoryId } from "@/data/subcategories";
-import type { MustangYear } from "@/data/years";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { SiteHeader } from "./SiteHeader";
+import { CategoryTabs } from "./CategoryTabs";
+import { YearStrip } from "./YearStrip";
+import { ComingSoon } from "./ComingSoon";
+import { SiteFooter } from "./SiteFooter";
+import { KitCard, type CardCompare } from "@/components/KitCard";
+import { PartCard } from "@/components/PartCard";
+import { useCompareSelection } from "@/lib/compare";
+import {
+  CATEGORIES,
+  kitsForYear,
+  partsForYear,
+  type CategoryId,
+  type Kit,
+  type MustangYear,
+  type Part,
+  type Tier,
+} from "@/lib/data";
 
-type Selection =
-  | { kind: "part"; slug: string }
-  | { kind: "kit"; slug: string }
-  | null;
+type Group =
+  | { kind: "parts"; title: string; style: "factory" | "tubular" }
+  | { kind: "kits"; title: string; tier: Tier };
+
+const GROUPS: Group[] = [
+  { kind: "parts", title: "Factory upper control arms", style: "factory" },
+  { kind: "parts", title: "Tubular upper control arms", style: "tubular" },
+  { kind: "kits", title: "Bolt-on kits", tier: "bolt-on" },
+  { kind: "kits", title: "Mustang II kits", tier: "mustang-ii" },
+  { kind: "kits", title: "Full chassis", tier: "full-chassis" },
+];
+
+function comingSoonNote(category: CategoryId, label: string): string {
+  if (category === "steering" || category === "brakes") {
+    return "Steering and brakes catalogs are next on the build list.";
+  }
+  return `The ${label} catalog is next on the build list.`;
+}
+
+/** Static header shell rendered while the compare-aware header hydrates. */
+function HeaderFallback() {
+  return (
+    <header className="site-header" aria-hidden="true">
+      <div className="header-inner">
+        <span className="wordmark">
+          Mustang Parts Guide
+          <span className="wordmark-tag">1964–1970</span>
+        </span>
+      </div>
+    </header>
+  );
+}
+
+function initialCategory(searchParams: URLSearchParams): CategoryId {
+  const raw = searchParams.get("cat");
+  return CATEGORIES.some((c) => c.id === raw) ? (raw as CategoryId) : "suspension";
+}
 
 export function HomeClient() {
+  return (
+    <Suspense fallback={<HomeFallback />}>
+      <HomeClientInner />
+    </Suspense>
+  );
+}
+
+/** Plain shell shown while search params resolve. */
+function HomeFallback() {
+  return (
+    <div className="page-shell">
+      <HeaderFallback />
+      <main className="content">
+        <p className="empty">Loading catalog…</p>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function HomeClientInner() {
+  const searchParams = useSearchParams();
   const [year, setYear] = useState<MustangYear>(1968);
-  const [category, setCategory] = useState<CategoryId>("suspension");
-  const [subcategory, setSubcategory] = useState<SubcategoryId>("factory-uca");
-  const [selected, setSelected] = useState<Selection>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const part = useMemo(
-    () => (selected?.kind === "part" ? partBySlug(selected.slug) : undefined),
-    [selected],
-  );
-  const kit = useMemo(
-    () => (selected?.kind === "kit" ? kitBySlug(selected.slug) : undefined),
-    [selected],
+  const [category, setCategory] = useState<CategoryId>(() =>
+    initialCategory(searchParams),
   );
 
-  function pickCategory(id: CategoryId) {
-    setCategory(id);
-    const next = defaultSubFor(id);
-    if (next) setSubcategory(next.id);
-    setSelected(null);
-  }
-
-  function pickSub(id: SubcategoryId) {
-    setSubcategory(id);
-    setSelected(null);
-    setMenuOpen(false);
-  }
+  const catLabel =
+    CATEGORIES.find((c) => c.id === category)?.label ?? category;
 
   return (
-    <div className={menuOpen ? "app-shell menu-open" : "app-shell"}>
-      {menuOpen ? (
-        <button
-          type="button"
-          className="menu-backdrop"
-          aria-label="Close menu"
-          onClick={() => setMenuOpen(false)}
-        />
-      ) : null}
-      <CategorySidebar
-        category={category}
-        subcategory={subcategory}
-        onCategory={pickCategory}
-        onSubcategory={pickSub}
-        open={menuOpen}
-      />
-      <div className="main-col">
-        <header className="top-bar">
-          <div className="mobile-head">
-            <button
-              type="button"
-              className="menu-btn"
-              aria-label="Open categories"
-              onClick={() => setMenuOpen(true)}
-            >
-              Menu
-            </button>
-            <p className="mobile-title">Parts Guide</p>
-          </div>
-          <YearSelector selected={year} onSelect={setYear} />
-        </header>
-        <div className="workspace">
-          <PartsWorkspace
-            year={year}
-            subcategory={subcategory}
-            selected={selected}
-            onSelect={setSelected}
+    <div className="page-shell">
+      <h1 className="visually-hidden">1964–1970 Mustang Parts Guide</h1>
+      <Suspense fallback={<HeaderFallback />}>
+        <SiteHeader category={category} onCategory={setCategory} />
+      </Suspense>
+      <CategoryTabs active={category} onSelect={setCategory} />
+      <YearStrip selected={year} onSelect={setYear} />
+
+      <main className="content">
+        {category !== "suspension" ? (
+          <ComingSoon
+            title={catLabel}
+            note={comingSoonNote(category, catLabel)}
           />
-          <PartDetailPane part={part} kit={kit} />
-        </div>
-      </div>
+        ) : (
+          <Suspense fallback={<p className="empty">Loading catalog…</p>}>
+            <SuspensionCatalog year={year} />
+          </Suspense>
+        )}
+      </main>
+
+      <SiteFooter />
+    </div>
+  );
+}
+
+function SuspensionCatalog({ year }: { year: MustangYear }) {
+  const compare = useCompareSelection();
+
+  const kitCompare = (kit: Kit): CardCompare => {
+    const checked = compare.kits.includes(kit.slug);
+    return {
+      checked,
+      onToggle: () => compare.toggleKit(kit.slug),
+      disabled: !checked && !compare.canAddKit,
+    };
+  };
+
+  const partCompare = (part: Part): CardCompare => {
+    const checked = compare.parts.includes(part.slug);
+    return {
+      checked,
+      onToggle: () => compare.togglePart(part.slug),
+      disabled: !checked && !compare.canAddPart,
+    };
+  };
+
+  return (
+    <div className="catalog">
+      {GROUPS.map((group) => {
+        const items =
+          group.kind === "parts"
+            ? partsForYear(year, "upper-control-arms", group.style)
+            : kitsForYear(year).filter((k) => k.tier === group.tier);
+
+        return (
+          <section key={group.title} aria-label={group.title}>
+            <div className="group-head">
+              <h2>{group.title}</h2>
+              <span className="group-count">
+                {items.length} {items.length === 1 ? "item" : "items"}
+              </span>
+            </div>
+            {items.length === 0 ? (
+              <p className="empty">Nothing listed for {year} in this group.</p>
+            ) : (
+              <div className="card-grid">
+                {group.kind === "parts"
+                  ? (items as Part[]).map((part) => (
+                      <PartCard
+                        key={part.slug}
+                        part={part}
+                        compare={partCompare(part)}
+                      />
+                    ))
+                  : (items as Kit[]).map((kit) => (
+                      <KitCard
+                        key={kit.slug}
+                        kit={kit}
+                        compare={kitCompare(kit)}
+                      />
+                    ))}
+              </div>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
 }

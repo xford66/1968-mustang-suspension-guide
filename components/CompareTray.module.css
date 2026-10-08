@@ -1,0 +1,168 @@
+/* The tray is a fixed bottom bar; .spacer keeps page content from being
+   covered. Both heights must stay in sync via --tray-h. */
+
+.spacer {
+  height: var(--tray-h, 76px);
+}
+
+.tray {
+  --tray-h: 76px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  height: var(--tray-h);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -6px 24px rgb(0 0 0 / 0.08);
+}
+
+.items {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px;
+}
+
+.chip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 240px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 4px 10px 4px 4px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.thumb,
+.thumbFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.thumb {
+  object-fit: cover;
+  background: var(--bg);
+}
+
+.thumbFallback {
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.chipLabel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.chipKind {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chipName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.chipX {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.counts {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clearBtn {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clearBtn:hover {
+  color: var(--ink);
+  border-color: var(--muted);
+}
+
+.compareBtn {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.compareBtn:hover {
+  filter: brightness(0.95);
+}
+
+@media (max-width: 640px) {
+  .tray {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .counts {
+    display: none;
+  }
+
+  .chipName {
+    max-width: 96px;
+  }
+}
