@@ -4,13 +4,8 @@ import { Suspense, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MAX_COMPARE, parseCompare } from "@/lib/compare";
-import {
-  getKitBySlug,
-  getPartBySlug,
-  installBadge,
-  type Kit,
-  type Part,
-} from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
+import { findKit, findPart, installBadge, type Kit, type Part } from "@/lib/catalog";
 import styles from "./ComparePage.module.css";
 
 type Column =
@@ -19,19 +14,20 @@ type Column =
 
 function useColumns(): Column[] {
   const searchParams = useSearchParams();
+  const catalog = useCatalog();
   return useMemo(() => {
     const { kits, parts } = parseCompare(searchParams);
     const columns: Column[] = [];
     for (const slug of kits) {
-      const kit = getKitBySlug(slug);
+      const kit = findKit(catalog.kits, slug);
       if (kit) columns.push({ kind: "kit", item: kit });
     }
     for (const slug of parts) {
-      const part = getPartBySlug(slug);
+      const part = findPart(catalog.parts, slug);
       if (part) columns.push({ kind: "part", item: part });
     }
     return columns;
-  }, [searchParams]);
+  }, [searchParams, catalog]);
 }
 
 function PhotoCell({ item }: { item: Kit | Part }) {
