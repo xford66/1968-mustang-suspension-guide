@@ -16,27 +16,6 @@ export type Kit = {
   photo?: string;
 };
 
-export const TIER_META: Record<
-  Tier,
-  { title: string; blurb: string }
-> = {
-  "bolt-on": {
-    title: "Bolt-on / factory style",
-    blurb:
-      "Uses stock mounting points. Tubular arms, coilovers, sway bars. Weekend-garage friendly.",
-  },
-  "mustang-ii": {
-    title: "Mustang II / IFS swap",
-    blurb:
-      "Replaces the front clip with a Mustang II-style independent front suspension. Cutting and welding required.",
-  },
-  "full-chassis": {
-    title: "Full chassis / pro-touring",
-    blurb:
-      "New subframe or complete chassis under the body. Biggest geometry and ride-quality jump.",
-  },
-};
-
 export const KITS: Kit[] = [
   {
     slug: "global-west-coilover",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { YEAR_NOTES, YEARS, yearPhoto, type MustangYear } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
+import type { MustangYear } from "@/lib/catalog";
 
 type Props = {
   selected: MustangYear;
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export function YearStrip({ selected, onSelect }: Props) {
+  const { years } = useCatalog();
   const stripRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
@@ -62,7 +64,7 @@ export function YearStrip({ selected, onSelect }: Props) {
         <div className={atStart ? "strip-fade left hidden" : "strip-fade left"} aria-hidden="true" />
         <div className={atEnd ? "strip-fade right hidden" : "strip-fade right"} aria-hidden="true" />
         <div className="year-strip" ref={stripRef} role="listbox" aria-label="Model years">
-          {YEARS.map((year) => {
+          {years.map(({ year, photo }) => {
             const active = year === selected;
             return (
               <button
@@ -74,13 +76,13 @@ export function YearStrip({ selected, onSelect }: Props) {
                 onClick={() => onSelect(year)}
               >
                 <span className="year-label">{year}</span>
-                <img src={yearPhoto(year)} alt={`${year} Mustang`} className="year-photo" loading="lazy" />
+                <img src={photo} alt={`${year} Mustang`} className="year-photo" loading="lazy" />
               </button>
             );
           })}
         </div>
       </div>
-      <p className="year-note" aria-live="polite">{YEAR_NOTES[selected]}</p>
+      <p className="year-note" aria-live="polite">{years.find((y) => y.year === selected)?.note ?? ""}</p>
     </section>
   );
 }

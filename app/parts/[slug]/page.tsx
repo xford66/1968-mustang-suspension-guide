@@ -34,13 +34,15 @@ const STYLE_LABEL: Record<PartStyle, string> = {
   tubular: "Tubular",
 };
 
-export function generateStaticParams() {
-  return getAllParts().map((part) => ({ slug: part.slug }));
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  return (await getAllParts()).map((part) => ({ slug: part.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const part = getPartBySlug(slug);
+  const part = await getPartBySlug(slug);
   if (!part) return { title: "Part not found" };
   return {
     title: `${part.name} — ${part.brand} | Mustang Suspension Guide`,
@@ -50,8 +52,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PartDetailPage({ params }: Props) {
   const { slug } = await params;
-  const part = getPartBySlug(slug);
+  const part = await getPartBySlug(slug);
   if (!part) notFound();
+  const allParts = await getAllParts();
 
   const badge = installBadge(part);
   const makerUrl = vendorPage(part.brand);
@@ -157,7 +160,7 @@ export default async function PartDetailPage({ params }: Props) {
           </a>
         ) : null}
 
-        <RelatedRow title="Related parts" items={relatedParts(part)} kind="part" />
+        <RelatedRow title="Related parts" items={relatedParts(allParts, part)} kind="part" />
       </main>
       <SiteFooter />
     </>

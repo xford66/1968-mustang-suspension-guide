@@ -4,11 +4,13 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
-import { searchKits, searchParts } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
+import { searchKits, searchParts } from "@/lib/catalog";
 import styles from "./SearchPage.module.css";
 
 function Results() {
   const searchParams = useSearchParams();
+  const catalog = useCatalog();
   const q = (searchParams.get("q") ?? "").trim();
 
   if (!q) {
@@ -20,8 +22,8 @@ function Results() {
     );
   }
 
-  const kits = searchKits(q);
-  const parts = searchParts(q);
+  const kits = searchKits(catalog.kits, q);
+  const parts = searchParts(catalog.parts, q);
   const total = kits.length + parts.length;
 
   if (total === 0) {
