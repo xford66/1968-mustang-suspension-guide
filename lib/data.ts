@@ -19,7 +19,6 @@ import { CATEGORIES } from "../data/categories";
 import { SUSPENSION_AREAS } from "../data/suspension-areas";
 import type { SuspensionAreaId } from "../data/suspension-areas";
 import { YEARS, yearPhoto } from "../data/years";
-import { fallbackKitPhoto, fallbackPartPhoto, staticOrder } from "./static-overlay";
 import type {
   Catalog,
   Category,
@@ -72,6 +71,8 @@ type KitRow = {
   details: string;
   price_range: string;
   tags: string[];
+  photo: string | null;
+  sort: number | null;
   years: number[];
 };
 
@@ -89,6 +90,7 @@ type PartRow = {
   price_range: string;
   tags: string[];
   photo: string | null;
+  sort: number | null;
   years: number[];
 };
 
@@ -146,9 +148,7 @@ function toKit(row: KitRow): Kit {
     install: row.install,
     priceRange: row.price_range,
     details: row.details,
-    // TODO(neon): `kits` has no photo column yet; photos come from the static
-    // file until one is added. See lib/static-overlay.ts.
-    photo: fallbackKitPhoto(row.slug),
+    photo: row.photo ?? undefined,
   };
 }
 
@@ -171,9 +171,7 @@ function toPart(row: PartRow): Part {
     install: row.install,
     priceRange: row.price_range,
     details: row.details,
-    // TODO(neon): parts.photo is NULL for every row today; fall back to the
-    // static photo until it is backfilled. See lib/static-overlay.ts.
-    photo: row.photo ?? fallbackPartPhoto(row.slug),
+    photo: row.photo ?? undefined,
   };
 }
 
@@ -192,24 +190,24 @@ export const getCatalog = cache(async (): Promise<Catalog> => {
     [
       sql`
         SELECT k.slug, k.category_id, k.brand, k.name, k.tier, k.overview,
-               k.install, k.details, k.price_range, k.tags,
+               k.install, k.details, k.price_range, k.tags, k.photo, k.sort,
                COALESCE(
                  (SELECT array_agg(ky.year ORDER BY ky.year)
                     FROM kit_years ky WHERE ky.kit_slug = k.slug),
                  '{}'
                ) AS years
           FROM kits k
-         ORDER BY k.brand, k.name, k.slug`,
+         ORDER BY k.sort NULLS LAST, k.brand, k.name, k.slug`,
       sql`
         SELECT p.slug, p.category_id, p.brand, p.name, p.pn, p.style, p.sold_as,
-               p.overview, p.install, p.details, p.price_range, p.tags, p.photo,
+               p.overview, p.install, p.details, p.price_range, p.tags, p.photo, p.sort,
                COALESCE(
                  (SELECT array_agg(py.year ORDER BY py.year)
                     FROM part_years py WHERE py.part_slug = p.slug),
                  '{}'
                ) AS years
           FROM parts p
-         ORDER BY p.brand, p.name, p.slug`,
+         ORDER BY p.sort NULLS LAST, p.brand, p.name, p.slug`,
       sql`
         SELECT id, name, parent_id, display_order
           FROM categories
@@ -222,8 +220,9 @@ export const getCatalog = cache(async (): Promise<Catalog> => {
     { readOnly: true },
   )) as [KitRow[], PartRow[], CategoryRow[], YearRow[]];
 
-  const kits = staticOrder(kitRows.map(toKit), "kit");
-  const parts = staticOrder(partRows.map(toPart), "part");
+  // Display order comes from the `sort` column (curated card order).
+  const kits = kitRows.map(toKit);
+  const parts = partRows.map(toPart);
 
   if (kits.length === 0 && parts.length === 0) {
     throw new Error(
