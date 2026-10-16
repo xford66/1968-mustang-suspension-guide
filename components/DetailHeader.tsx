@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
-import type { CategoryId } from "@/lib/data";
+import type { CategoryId } from "@/lib/catalog";
 
 /**
  * Site chrome for detail pages. The shared SiteHeader expects the home page's

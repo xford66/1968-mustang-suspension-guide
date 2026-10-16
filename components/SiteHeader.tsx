@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { SearchBar } from "@/components/SearchBar";
 import { useCompareSelection } from "@/lib/compare";
-import { CATEGORIES, categoryCounts, type CategoryId } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
+import type { CategoryId } from "@/lib/catalog";
 
 type Props = {
   /** Active category. Defaults to "suspension". */
@@ -37,7 +38,7 @@ export function SiteHeader({ category = "suspension", onCategory }: Props) {
     };
   }, [drawerOpen, close]);
 
-  const counts = categoryCounts();
+  const { categories, categoryCounts: counts } = useCatalog();
 
   function pick(id: CategoryId) {
     if (onCategory) onCategory(id);
@@ -108,7 +109,7 @@ export function SiteHeader({ category = "suspension", onCategory }: Props) {
         </div>
         <nav className="drawer-nav" aria-label="Categories">
           <p className="drawer-nav-label">Categories</p>
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const active = cat.id === category;
             const cls = active ? "drawer-item active" : "drawer-item";
             const badge = (

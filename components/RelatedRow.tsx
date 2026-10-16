@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Kit, Part } from "@/lib/data";
+import type { Kit, Part } from "@/lib/catalog";
 import { Photo } from "./Photo";
 import styles from "./RelatedRow.module.css";
 

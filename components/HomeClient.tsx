@@ -10,16 +10,17 @@ import { SiteFooter } from "./SiteFooter";
 import { KitCard, type CardCompare } from "@/components/KitCard";
 import { PartCard } from "@/components/PartCard";
 import { useCompareSelection } from "@/lib/compare";
+import { useCatalog } from "@/components/CatalogProvider";
 import {
-  CATEGORIES,
   kitsForYear,
   partsForYear,
+  type Category,
   type CategoryId,
   type Kit,
   type MustangYear,
   type Part,
   type Tier,
-} from "@/lib/data";
+} from "@/lib/catalog";
 
 type Group =
   | { kind: "parts"; title: string; style: "factory" | "tubular" }
@@ -54,9 +55,12 @@ function HeaderFallback() {
   );
 }
 
-function initialCategory(searchParams: URLSearchParams): CategoryId {
+function initialCategory(
+  searchParams: URLSearchParams,
+  categories: Category[],
+): CategoryId {
   const raw = searchParams.get("cat");
-  return CATEGORIES.some((c) => c.id === raw) ? (raw as CategoryId) : "suspension";
+  return categories.some((c) => c.id === raw) ? (raw as CategoryId) : "suspension";
 }
 
 export function HomeClient() {
@@ -82,13 +86,14 @@ function HomeFallback() {
 
 function HomeClientInner() {
   const searchParams = useSearchParams();
+  const { categories } = useCatalog();
   const [year, setYear] = useState<MustangYear>(1968);
   const [category, setCategory] = useState<CategoryId>(() =>
-    initialCategory(searchParams),
+    initialCategory(searchParams, categories),
   );
 
   const catLabel =
-    CATEGORIES.find((c) => c.id === category)?.label ?? category;
+    categories.find((c) => c.id === category)?.label ?? category;
 
   return (
     <div className="page-shell">
@@ -119,6 +124,7 @@ function HomeClientInner() {
 
 function SuspensionCatalog({ year }: { year: MustangYear }) {
   const compare = useCompareSelection();
+  const { kits, parts } = useCatalog();
 
   const kitCompare = (kit: Kit): CardCompare => {
     const checked = compare.kits.includes(kit.slug);
@@ -143,8 +149,8 @@ function SuspensionCatalog({ year }: { year: MustangYear }) {
       {GROUPS.map((group) => {
         const items =
           group.kind === "parts"
-            ? partsForYear(year, "upper-control-arms", group.style)
-            : kitsForYear(year).filter((k) => k.tier === group.tier);
+            ? partsForYear(parts, year, "upper-control-arms", group.style)
+            : kitsForYear(kits, year).filter((k) => k.tier === group.tier);
 
         return (
           <section key={group.title} aria-label={group.title}>

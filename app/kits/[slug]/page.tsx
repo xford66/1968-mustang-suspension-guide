@@ -29,13 +29,15 @@ const BADGE_CLASS: Record<InstallBadge, string> = {
   Moderate: styles.badgeModerate,
 };
 
-export function generateStaticParams() {
-  return getAllKits().map((kit) => ({ slug: kit.slug }));
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  return (await getAllKits()).map((kit) => ({ slug: kit.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const kit = getKitBySlug(slug);
+  const kit = await getKitBySlug(slug);
   if (!kit) return { title: "Suspension kit not found" };
   return {
     title: `${kit.name} — ${kit.brand} | Mustang Suspension Guide`,
@@ -45,8 +47,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function KitDetailPage({ params }: Props) {
   const { slug } = await params;
-  const kit = getKitBySlug(slug);
+  const kit = await getKitBySlug(slug);
   if (!kit) notFound();
+  const allKits = await getAllKits();
 
   const badge = installBadge(kit);
   const makerUrl = vendorPage(kit.brand);
@@ -142,7 +145,7 @@ export default async function KitDetailPage({ params }: Props) {
           </a>
         ) : null}
 
-        <RelatedRow title="Related kits" items={relatedKits(kit)} kind="kit" />
+        <RelatedRow title="Related kits" items={relatedKits(allKits, kit)} kind="kit" />
       </main>
       <SiteFooter />
     </>

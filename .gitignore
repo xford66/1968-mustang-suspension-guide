@@ -5,4 +5,11 @@ out
 *.log
 
 # build artifacts
-tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# env files: never commit credentials (.env.example is the template)
+.env*
+!.env.example
+
+# Vercel CLI
+.vercel

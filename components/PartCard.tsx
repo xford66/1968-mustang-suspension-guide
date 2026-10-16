@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Part, PartStyle } from "@/lib/data";
-import { installBadge } from "@/lib/data";
+import type { Part, PartStyle } from "@/lib/catalog";
+import { installBadge } from "@/lib/catalog";
 import { Photo } from "./Photo";
 import type { CardCompare } from "./KitCard";
 import styles from "./PartCard.module.css";

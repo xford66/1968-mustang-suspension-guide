@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Kit } from "@/lib/data";
-import { installBadge } from "@/lib/data";
+import type { Kit } from "@/lib/catalog";
+import { installBadge } from "@/lib/catalog";
 import { Photo } from "./Photo";
 import styles from "./KitCard.module.css";
 

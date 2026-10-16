@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { MAX_COMPARE, buildCompareHref, useCompareSelection } from "@/lib/compare";
-import { getKitBySlug, getPartBySlug } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
+import { findKit, findPart, type Kit, type Part } from "@/lib/catalog";
 import styles from "./CompareTray.module.css";
 
 type TrayItem = {
@@ -14,10 +15,15 @@ type TrayItem = {
   photo?: string;
 };
 
-function resolveItems(kits: string[], parts: string[]): TrayItem[] {
+function resolveItems(
+  allKits: Kit[],
+  allParts: Part[],
+  kits: string[],
+  parts: string[],
+): TrayItem[] {
   const items: TrayItem[] = [];
   for (const slug of kits) {
-    const kit = getKitBySlug(slug);
+    const kit = findKit(allKits, slug);
     if (!kit) continue;
     items.push({
       kind: "kit",
@@ -28,7 +34,7 @@ function resolveItems(kits: string[], parts: string[]): TrayItem[] {
     });
   }
   for (const slug of parts) {
-    const part = getPartBySlug(slug);
+    const part = findPart(allParts, slug);
     if (!part) continue;
     items.push({
       kind: "part",
@@ -44,13 +50,14 @@ function resolveItems(kits: string[], parts: string[]): TrayItem[] {
 export function CompareTray() {
   const router = useRouter();
   const pathname = usePathname();
+  const catalog = useCatalog();
   const { kits, parts, toggleKit, togglePart, kitCount, partCount } =
     useCompareSelection();
 
   const total = kitCount + partCount;
   if (total === 0) return null;
 
-  const items = resolveItems(kits, parts);
+  const items = resolveItems(catalog.kits, catalog.parts, kits, parts);
 
   const clear = () => {
     router.replace(pathname, { scroll: false });

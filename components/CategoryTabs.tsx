@@ -1,6 +1,7 @@
 "use client";
 
-import { CATEGORIES, categoryCounts, type CategoryId } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
+import type { CategoryId } from "@/lib/catalog";
 
 type Props = {
   active: CategoryId;
@@ -8,13 +9,13 @@ type Props = {
 };
 
 export function CategoryTabs({ active, onSelect }: Props) {
-  const counts = categoryCounts();
+  const { categories, categoryCounts: counts } = useCatalog();
 
   return (
     <nav className="cat-tabs" aria-label="Part categories">
       <div className="cat-tabs-inner">
         <div className="cat-tabs-scroll" role="tablist" aria-label="Categories">
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const selected = cat.id === active;
             return (
               <button
