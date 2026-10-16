@@ -32,9 +32,8 @@ clear error if neither is set. Pages are static and revalidate hourly.
 Client components get the catalog through `components/CatalogProvider.tsx`;
 pure helpers and types live in `lib/catalog.ts`.
 
-Still static for now (see `lib/static-overlay.ts`): kit and part photos (the
-`kits` table has no `photo` column and `parts.photo` is empty) and card display
-order (no `sort` column yet).
+Photos come from the `photo` column on `kits` and `parts`, and card order from
+their `sort` column. Year photos and notes come from the `years` table.
 
 ## Checks
 
