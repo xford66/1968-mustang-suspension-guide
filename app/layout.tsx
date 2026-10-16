@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { CompareTray } from "@/components/CompareTray";
+import { CatalogProvider } from "@/components/CatalogProvider";
+import { getCatalog } from "@/lib/data";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +11,16 @@ export const metadata: Metadata = {
     "Compare first-gen Mustang suspension kits by year, install type, and budget.",
 };
 
-export default function RootLayout({
+// Catalog comes from Neon; rebuild static pages at most once an hour (ISR).
+export const revalidate = 3600;
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const catalog = await getCatalog();
+
   return (
     <html lang="en">
       <head>
@@ -22,7 +31,14 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <CatalogProvider catalog={catalog}>
+          {children}
+          <Suspense>
+            <CompareTray />
+          </Suspense>
+        </CatalogProvider>
+      </body>
     </html>
   );
 }
